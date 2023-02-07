@@ -1,0 +1,19 @@
+{
+    "name": "HybridCLR.MGF.Runtime",
+    "rootNamespace": "",
+    "references": [
+        "UniTask",
+        "Saro.MGF",
+        "Saro.MoonAsset",
+        "HybridCLR.Runtime"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": true,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

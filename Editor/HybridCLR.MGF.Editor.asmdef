@@ -1,0 +1,21 @@
+{
+    "name": "HybridCLR.MGF.Editor",
+    "rootNamespace": "",
+    "references": [
+        "Saro.MoonAsset.Editor",
+        "HybridCLR.MGF.Runtime",
+        "Saro.MGF",
+        "HybridCLR.Editor"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": true,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

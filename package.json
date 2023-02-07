@@ -1,0 +1,17 @@
+{
+  "name": "com.saro.mgf.hybridclr",
+  "version": "1.0.0",
+  "displayName": "HybridCLR for MGF",
+  "description": "MGF框架的HybridCLR支持",
+  "unity": "2021.3",
+  "dependencies": {
+      "com.focus-creative-games.hybridclr_unity": "https://github.com/focus-creative-games/hybridclr_unity.git#v2.0.0-rc"
+  },
+  "keywords": [
+    "hotupdate",
+    "hybridclr"
+  ],
+  "author": {
+    "name": "saro"
+  }
+}

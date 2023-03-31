@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
+using Cysharp.Threading.Tasks;
 using Saro;
 using Saro.Core;
 using Saro.Utility;
@@ -26,14 +28,15 @@ namespace HybridCLR
         /// <summary>
         /// 为aot assembly加载原始metadata， 这个代码放aot或者热更新都行。
         /// 一旦加载后，如果AOT泛型函数对应native实现不存在，则自动替换为解释模式执行
+        [Conditional("ENABLE_HOTFIX")]
         public static void LoadMetadataForAOTAssembly()
         {
 #if !UNITY_EDITOR
-            LoadMetadataForAOTAssembly_Internal();
+            LoadMetadataForAOTAssembly_Internal().Forget();
 #endif
         }
 
-        private static async void LoadMetadataForAOTAssembly_Internal()
+        private static async UniTask LoadMetadataForAOTAssembly_Internal()
         {
             var assetManager = IAssetManager.Current;
 
@@ -43,26 +46,29 @@ namespace HybridCLR
 #endif
 
             using var vfile = await assetManager.OpenVFileAsync("Assets/ResRaw/hotfix");
-            var bytes = vfile.ReadFile("aotDlls");
-            var json = Encoding.UTF8.GetString(bytes);
-            var aotDlls = JsonHelper.FromJson<List<string>>(json);
-
-            foreach (var aotDllName in aotDlls)
+            if (vfile != null)
             {
-                byte[] dllBytes = vfile.ReadFile(aotDllName);
-                if (dllBytes == null)
-                {
-                    Log.ERROR($"LoadMetadataForAOTAssembly failed. file not found: {aotDllName}.");
-                    continue;
-                }
+                var bytes = vfile.ReadFile("aotDlls");
+                var json = Encoding.UTF8.GetString(bytes);
+                var aotDlls = JsonHelper.FromJson<List<string>>(json);
 
-                unsafe
+                foreach (var aotDllName in aotDlls)
                 {
-                    HomologousImageMode mode = HomologousImageMode.SuperSet;
-                    LoadImageErrorCode err = RuntimeApi.LoadMetadataForAOTAssembly(dllBytes, mode);
+                    byte[] dllBytes = vfile.ReadFile(aotDllName);
+                    if (dllBytes == null)
+                    {
+                        Log.ERROR($"LoadMetadataForAOTAssembly failed. file not found: {aotDllName}.");
+                        continue;
+                    }
+
+                    unsafe
+                    {
+                        HomologousImageMode mode = HomologousImageMode.SuperSet;
+                        LoadImageErrorCode err = RuntimeApi.LoadMetadataForAOTAssembly(dllBytes, mode);
 #if ENABLE_LOG
-                    sb.AppendLine($"dll : {aotDllName}. mode:{mode} ret : {err}");
+                        sb.AppendLine($"dll : {aotDllName}. mode:{mode} ret : {err}");
 #endif
+                    }
                 }
             }
 
